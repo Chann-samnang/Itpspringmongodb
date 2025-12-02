@@ -1,9 +1,11 @@
 package co.istad.itpmongodb.service.impl;
 
 import co.istad.itpmongodb.domain.User;
+import co.istad.itpmongodb.dto.FilterDto;
 import co.istad.itpmongodb.dto.UserRequest;
 import co.istad.itpmongodb.dto.UserResponse;
 import co.istad.itpmongodb.exception.UserNotFoundException;
+import co.istad.itpmongodb.filter.FilteringFactory;
 import co.istad.itpmongodb.mapper.UserMapper;
 import co.istad.itpmongodb.repository.UserRepository;
 import co.istad.itpmongodb.service.UserService;
@@ -15,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.FileFilter;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -22,6 +26,15 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+
+    @Override
+    public Page<UserResponse> filterUsers(FilterDto filter, int page, int size) {
+        Sort sortByName = Sort.by(Sort.Direction.ASC, "name");
+        Pageable pageable = PageRequest.of(page, size, sortByName);
+        Page<User> filterUsers = userRepository.findAllWithFilter(User.class, FilteringFactory.parseFromParams(filter.filter(), User.class), pageable);
+        return filterUsers.map(userMapper::toUserResponse);
+
+    }
 
     @Override
     public UserResponse findById(String id) {

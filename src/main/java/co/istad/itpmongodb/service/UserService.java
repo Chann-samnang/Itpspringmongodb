@@ -1,14 +1,19 @@
 package co.istad.itpmongodb.service;
 
+import co.istad.itpmongodb.dto.FilterDto;
 import co.istad.itpmongodb.dto.UserRequest;
 import co.istad.itpmongodb.dto.UserResponse;
+import co.istad.itpmongodb.filter.Filtering;
 import org.springframework.data.domain.Page;
 
+import java.io.FileFilter;
 import java.util.List;
 
 public interface UserService {
 
     Page<UserResponse> findAll(int page, int size);
+
+    Page<UserResponse> filterUsers(FilterDto filter, int page, int size);
 
     UserResponse findById(String id);
 
