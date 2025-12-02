@@ -1,5 +1,6 @@
 package co.istad.itpmongodb.controller;
 
+import co.istad.itpmongodb.dto.FilterDto;
 import co.istad.itpmongodb.dto.UserRequest;
 import co.istad.itpmongodb.dto.UserResponse;
 import co.istad.itpmongodb.service.UserService;
@@ -8,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,6 +16,16 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+
+
+    @PostMapping("/filter")
+    public Page<UserResponse> filterUsers(
+            @RequestBody FilterDto filter,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "5") int size
+    ) {
+        return userService.filterUsers(filter, page, size);
+    }
 
     @GetMapping
     public Page<UserResponse> getAll(
