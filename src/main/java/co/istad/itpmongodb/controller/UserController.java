@@ -4,6 +4,7 @@ import co.istad.itpmongodb.dto.UserRequest;
 import co.istad.itpmongodb.dto.UserResponse;
 import co.istad.itpmongodb.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,8 +18,11 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<UserResponse> getAll() {
-        return userService.findAll();
+    public Page<UserResponse> getAll(
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "5") int size
+    ) {
+        return userService.findAll(page, size);
 
     }
 

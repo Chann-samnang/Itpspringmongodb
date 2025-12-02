@@ -7,12 +7,13 @@ import co.istad.itpmongodb.exception.UserNotFoundException;
 import co.istad.itpmongodb.mapper.UserMapper;
 import co.istad.itpmongodb.repository.UserRepository;
 import co.istad.itpmongodb.service.UserService;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,17 +37,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponse> findAll() {
-        return userRepository.findAll()
-                .stream()
-                .map(user -> UserResponse.builder()
-                        .id(user.getId())
-                        .name(user.getName())
-                        .username(user.getUsername())
-                        .email(user.getEmail())
-                        .build()
-                )
-                .toList();
+    public Page<UserResponse> findAll(int page, int size) {
+
+        Sort sortByName = Sort.by(Sort.Direction.ASC, "name");
+        Pageable pageable = PageRequest.of(page, size, sortByName);
+        Page<User> users = userRepository.findAll(pageable);
+
+
+        return users.map(userMapper::toUserResponse);
     }
 
     @Override

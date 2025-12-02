@@ -2,12 +2,13 @@ package co.istad.itpmongodb.service;
 
 import co.istad.itpmongodb.dto.UserRequest;
 import co.istad.itpmongodb.dto.UserResponse;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface UserService {
 
-    List<UserResponse> findAll();
+    Page<UserResponse> findAll(int page, int size);
 
     UserResponse findById(String id);
 
